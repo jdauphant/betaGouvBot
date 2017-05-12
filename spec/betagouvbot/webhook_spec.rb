@@ -3,10 +3,11 @@
 
 RSpec.describe BetaGouvBot::Webhook do
   describe '/compte' do
-    let(:callback)  { 'https://bob.coop' }
-    let(:user_name) { 'bob' }
-    let(:text)      { "#{user_name} #{user_name}@email.coop password" }
-    let(:params)    { { response_url: callback, user_name: user_name, text: text } }
+    let(:callback)     { 'https://bob.coop' }
+    let(:user_name)    { 'bob' }
+    let(:text)         { "#{user_name} #{user_name}@email.coop password" }
+    let(:empty_params) { { response_url: callback, user_name: user_name } }
+    let(:valid_params) { empty_params.merge(text: text) }
 
     before do
       stub_request(:any, callback)
@@ -18,6 +19,7 @@ RSpec.describe BetaGouvBot::Webhook do
     end
 
     it { expect(post('/compte')).not_to be_ok }
-    it { expect(post('/compte', params)).to be_ok }
+    it { expect(post('/compte', empty_params)).not_to be_ok }
+    it { expect(post('/compte', valid_params)).to be_ok }
   end
 end
