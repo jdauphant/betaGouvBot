@@ -1,6 +1,8 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
+require 'betagouvbot/mail'
+
 module BetaGouvBot
   RULES = {
     21 => { mail: Mail.from_file('data/mail_3w.md',

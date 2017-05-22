@@ -31,7 +31,8 @@ RSpec.describe BetaGouvBot::Webhook do
         post('/compte', valid_params)
       end
 
-      it { expect(last_response).to be_successful }
+      it { expect(last_response).to be_ok }
+      it { expect(last_response.body).to be_empty }
 
       it 'broadcasts acknowledge' do
         expect(a_request(:post, callback).with(body: /demande de @bob/))
@@ -51,7 +52,9 @@ RSpec.describe BetaGouvBot::Webhook do
           post('/compte', valid_params.merge(response_url: ''))
         end
 
-        it { expect(last_response.status).to eq(400) }
+        it { expect(last_response).to be_ok }
+        it { expect(last_response.body).to include('code') }
+        it { expect(last_response.body).to include('400') }
         it { expect(last_response.body).to include('errors') }
         it { expect(last_response.body).to match(/response_url/) }
 
@@ -67,7 +70,9 @@ RSpec.describe BetaGouvBot::Webhook do
           post('/compte', valid_params.merge(user_name: ''))
         end
 
-        it { expect(last_response.status).to eq(400) }
+        it { expect(last_response).to be_ok }
+        it { expect(last_response.body).to include('code') }
+        it { expect(last_response.body).to include('400') }
         it { expect(last_response.body).to include('errors') }
         it { expect(last_response.body).to match(/user_name/) }
 
@@ -83,7 +88,9 @@ RSpec.describe BetaGouvBot::Webhook do
           post('/compte', base_params.merge(token: ''))
         end
 
-        it { expect(last_response.status).to eq(400) }
+        it { expect(last_response).to be_ok }
+        it { expect(last_response.body).to include('code') }
+        it { expect(last_response.body).to include('400') }
         it { expect(last_response.body).to include('errors') }
         it { expect(last_response.body).to match(/token/) }
 
@@ -100,7 +107,9 @@ RSpec.describe BetaGouvBot::Webhook do
         post('/compte', valid_params.merge(token: token.reverse))
       end
 
-      it { expect(last_response.status).to eq(401) }
+      it { expect(last_response).to be_ok }
+      it { expect(last_response.body).to include('code') }
+      it { expect(last_response.body).to include('401') }
       it { expect(last_response.body).to include('errors') }
       it { expect(last_response.body).to match(/token/) }
 
@@ -116,7 +125,9 @@ RSpec.describe BetaGouvBot::Webhook do
         post('/compte', valid_params.merge(text: ''))
       end
 
-      it { expect(last_response.status).to eq(422) }
+      it { expect(last_response).to be_ok }
+      it { expect(last_response.body).to include('code') }
+      it { expect(last_response.body).to include('422') }
       it { expect(last_response.body).to include('errors') }
       it { expect(last_response.body).to match(%r{/compte}) }
 
@@ -138,7 +149,9 @@ RSpec.describe BetaGouvBot::Webhook do
         post('/compte', valid_params.merge(text: 'bob69 #bob69'))
       end
 
-      it { expect(last_response.status).to eq(422) }
+      it { expect(last_response).to be_ok }
+      it { expect(last_response.body).to include('code') }
+      it { expect(last_response.body).to include('422') }
       it { expect(last_response.body).to include('errors') }
       it { expect(last_response.body).to match(/nom/) }
       it { expect(last_response.body).to match(/email/) }
@@ -167,7 +180,9 @@ RSpec.describe BetaGouvBot::Webhook do
         post('/compte', valid_params.merge(text: text.gsub('bob', 'joe')))
       end
 
-      it { expect(last_response.status).to eq(404) }
+      it { expect(last_response).to be_ok }
+      it { expect(last_response.body).to include('code') }
+      it { expect(last_response.body).to include('404') }
       it { expect(last_response.body).to include('errors') }
       it { expect(last_response.body).to match(/je ne vois pas de qui tu veux parler/) }
 
