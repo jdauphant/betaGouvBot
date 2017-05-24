@@ -5,14 +5,28 @@ require 'kramdown'
 
 module BetaGouvBot
   class Mail
+    class << self
+      def rules
+        @rules ||= {
+          21 => { mail: from_file('data/mail_3w.md', ['{{author.id}}@beta.gouv.fr']) },
+          14 => { mail: from_file(
+            'data/mail_2w.md',
+            ['{{author.id}}@beta.gouv.fr', 'contact@beta.gouv.fr']
+          ) },
+          1  => { mail: from_file('data/mail_1day.md', ['{{author.id}}@beta.gouv.fr']) },
+          -1 => { mail: from_file('data/mail_after.md', ['contact@beta.gouv.fr']) }
+        }
+      end
+
+      # @note Email data files consist of 1 subject line plus body
+      def from_file(body_path, recipients = [], sender = 'secretariat@beta.gouv.fr')
+        subject, *rest = File.readlines(body_path)
+        new(subject.strip, rest.join, recipients, sender)
+      end
+    end
+
     attr_accessor :subject
     attr_accessor :recipients
-
-    def self.from_file(body_path, recipients = [], sender = 'secretariat@beta.gouv.fr')
-      # Email data files consist of 1 subject line plus body
-      subject, *rest = File.readlines(body_path)
-      Mail.new(subject.strip, rest.join, recipients, sender)
-    end
 
     def initialize(subject, body_t, recipients, sender)
       @subject = subject
